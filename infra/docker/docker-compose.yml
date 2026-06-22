@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: dimaker
+      POSTGRES_PASSWORD: dimaker
+      POSTGRES_DB: dimaker
+    ports:
+      - "5433:5432"
+    volumes:
+      - dimaker_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dimaker -d dimaker"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - dimaker_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.11
+    environment:
+      MEILI_ENV: development
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MASTER_KEY: dimaker_dev_master_key
+    ports:
+      - "7700:7700"
+    volumes:
+      - dimaker_meili:/meili_data
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: dimaker
+      MINIO_ROOT_PASSWORD: dimaker_secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - dimaker_minio:/data
+
+volumes:
+  dimaker_pg:
+  dimaker_redis:
+  dimaker_meili:
+  dimaker_minio:

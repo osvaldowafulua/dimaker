@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dimaker-workers
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dimaker-workers
+  template:
+    metadata:
+      labels:
+        app: dimaker-workers
+    spec:
+      containers:
+        - name: workers
+          image: dimaker/workers:latest
+          envFrom:
+            - secretRef:
+                name: dimaker-secrets

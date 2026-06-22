@@ -1,0 +1,15 @@
+FROM node:20-alpine AS base
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+WORKDIR /app
+
+FROM base AS build
+COPY . .
+RUN pnpm install --frozen-lockfile && pnpm --filter @dimaker/workers build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=build /app/apps/workers/dist ./dist
+COPY --from=build /app/apps/workers/package.json ./
+COPY --from=build /app/node_modules ./node_modules
+CMD ["node", "dist/index.js"]

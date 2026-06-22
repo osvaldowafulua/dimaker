@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply antialiased scroll-smooth;
+}
+
+body {
+  @apply bg-surface text-foreground font-sans;
+}
+
+.text-ali {
+  color: #ef4444;
+}
+
+.container-wrapper {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
+}
+
+.glass-nav {
+  @apply rounded-3xl border border-white/10 bg-stone-100/60 shadow-md backdrop-blur-md dark:bg-stone-900/60;
+}
+
+@keyframes shine-pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  to {
+    background-position: 0% 0%;
+  }
+}
+
+@layer utilities {
+  .animate-shine-pulse {
+    animation: shine-pulse var(--shine-pulse-duration, 14s) infinite linear;
+  }
+  .bg-shine-size {
+    background-size: 300% 300%;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@property --rainbow-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes rainbow-spin {
+  to {
+    --rainbow-angle: 360deg;
+  }
+}
+
+@layer utilities {
+  .animate-rainbow-spin {
+    animation: rainbow-spin 6s linear infinite;
+  }
+}
